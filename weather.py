@@ -37,7 +37,7 @@ Input:
 timestamp: "2022-06-20T17:03:23.379152+02:00"  (ISO format, string). USE GMT+2 (Europe/Kyiv)!
 town: "Poltava,UA"
 
-Output: List of 12 JSONs for each hour after "timestamp"
+Output: Dictionary, where the keys are days (like "2022-06-20") and values are the lists of weather forecast vectors for each hour in the 12-hour period
 """
 def get_weather_forecast(timestamp, town):
     output = dict()
