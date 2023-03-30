@@ -3,7 +3,12 @@ import datetime
 import pytz
 import pandas
 
-API_KEY = "DNEUKTGQWMW3SDPAH7Z75Y9F8"
+API_KEY = ""
+with open("weather_api_key.txt", "r") as f:
+    API_KEY = f.read()
+    f.close()
+
+
 URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
 
 """
@@ -70,8 +75,17 @@ def get_weather_forecast(timestamp, town):
 
 
     return output
-"""
-for i in get_weather_forecast(datetime.datetime.now(pytz.timezone("Europe/Kyiv")).isoformat(), "Poltava,UA")[0].keys():
+
+print("The names and the order of keys in the returned list's dictionaries")
+print()
+output = get_weather_forecast(datetime.datetime.now(pytz.timezone("Europe/Kyiv")).isoformat(), "Poltava,UA")
+for i in output[0].keys():
     print(i)
-print(get_weather_forecast(datetime.datetime.now(pytz.timezone("Europe/Kyiv")).isoformat(), "Poltava,UA")[0]["day_tempmin"])
+print(len(output[0].keys()))
+
 """
+Input: list of dictionaries, all with the same keys
+Output: list of Pandas's DataFrames
+"""
+def vectorize(data):
+    return pandas.DataFrame.from_dict(data)
