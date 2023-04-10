@@ -3,7 +3,12 @@ import datetime
 import pytz
 import pandas
 
-API_KEY = "DNEUKTGQWMW3SDPAH7Z75Y9F8"
+API_KEY = ""
+with open("weather_api_key.txt", "r") as f:
+    API_KEY = f.read()
+    f.close()
+
+
 URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
 
 """
@@ -13,7 +18,7 @@ timestamp: "2022-06-20T17:03:23.379152+02:00"  (ISO format, string)
 Output: {"2022-06-20": ["18:00:00", "19:00:00", "20:00:00", "21:00:00", "22:00:00", "23:00:00"], 
          "2022-06-21": ["00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00"]}
 """
-def next_12_timestamps(timestamp):
+def next_24_timestamps(timestamp):
     dic = dict()
     minute0 = timestamp[14:16]
     if int(minute0) < 30:
@@ -22,7 +27,7 @@ def next_12_timestamps(timestamp):
     ts = pandas.Timestamp(timestamp)
     ts = ts.round(freq = "H")
     stamp1 = ts.to_pydatetime()
-    for i in range(12):
+    for i in range(24):
         if stamp1.isoformat()[:10] not in dic.keys():
             dic[stamp1.isoformat()[:10]] = [stamp1.isoformat()[11:19]]
         else:
@@ -41,7 +46,7 @@ Output: list of dictionaries, where keys are the headers of the csv file "all_we
 """
 def get_weather_forecast(timestamp, town):
     output = []
-    timepoints = next_12_timestamps(timestamp)
+    timepoints = next_24_timestamps(timestamp)
     columns = ["city_latitude","city_longitude","city_resolvedAddress","city_address","city_timezone","city_tzoffset","day_datetime",\
                "day_datetimeEpoch","day_tempmax","day_tempmin","day_temp","day_feelslikemax","day_feelslikemin","day_feelslike","day_dew",\
                 "day_humidity","day_precip","day_precipprob","day_precipcover","day_snow","day_snowdepth","day_windgust","day_windspeed",\
@@ -54,6 +59,7 @@ def get_weather_forecast(timestamp, town):
     
     for day in timepoints.keys():
         responce = requests.get(URL+town+"/"+day+"T"+timepoints[day][0]+"?key="+API_KEY+"&unitGroup=metric")
+        #print(URL+town+"/"+day+"T"+timepoints[day][0]+"?key="+API_KEY+"&unitGroup=metric")
         responce = responce.json()
     
         for hour in responce["days"][0]["hours"]:
@@ -63,15 +69,40 @@ def get_weather_forecast(timestamp, town):
                     if key[:4] == "city":
                         newdict[key] = responce[key[5:]]
                     elif key[:3] == "day":
-                        newdict[key] = responce["days"][0][key[4:]]
+                        if key[4:] == "severerisk":
+                            try:
+                                newdict[key] = responce["days"][0][key[4:]]
+                            except:
+                                newdict[key] = 10.782214632864836 # average from the .csv
+                        else:
+                            newdict[key] = responce["days"][0][key[4:]]
                     else:
-                        newdict[key] = hour[key[5:]]
+                        if key[5:] == "severerisk":
+                            try:
+                                newdict[key] = hour[key[5:]]
+                            except:
+                                newdict[key] = 10.782214632864836 # average from the .csv
+                        else:
+                            newdict[key] = hour[key[5:]]
                 output.append(newdict)
+                
 
 
     return output
 """
-for i in get_weather_forecast(datetime.datetime.now(pytz.timezone("Europe/Kyiv")).isoformat(), "Poltava,UA")[0].keys():
+print("The names and the order of keys in the returned list's dictionaries")
+print()
+output = get_weather_forecast(datetime.datetime.now(pytz.timezone("Europe/Kyiv")).isoformat(), "Poltava,UA")
+for i in output[0].keys():
     print(i)
-print(get_weather_forecast(datetime.datetime.now(pytz.timezone("Europe/Kyiv")).isoformat(), "Poltava,UA")[0]["day_tempmin"])
+print(len(output[0].keys()))
 """
+"""
+Input: list of dictionaries, all with the same keys
+Output: list of Pandas's DataFrames
+"""
+def vectorize(data):
+    df = pandas.DataFrame.from_dict(data)
+    df["city_address"] = df["city_address"].apply(lambda x: str(x))
+    df["city_timezone"] = df["city_timezone"].apply(lambda x: str(x))
+    return df
