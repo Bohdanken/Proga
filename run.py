@@ -18,7 +18,7 @@ import pickle
 import weather
 from sklearn import preprocessing
 import scipy.sparse
-
+MODEL_FOLDER="model"
 
 def get_date_from_user():
     today = datetime.combine(date.today(),datetime.min.time())
@@ -166,9 +166,7 @@ def extract_topn_from_vector(feature_names, sorted_items, topn=10):
     for idx, score in sorted_items:
         score_vals.append(round(score, 3))
         feature_vals.append(feature_names[idx])
-
     results = {}
-
     for idx in range(len(feature_vals)):
         results[feature_vals[idx]]=score_vals[idx]
     return results
@@ -347,13 +345,16 @@ if __name__ == "__main__":
     weather_forecast_df["city"] = weather_forecast_df["city_resolvedAddress"].apply(lambda x: x.split(",")[0])
     weather_forecast_df["city"] = weather_forecast_df["city"].replace("Хмельницька область", "Хмельницький")
     input_df = merge_weather_isw_region(weather_forecast_df, text_df, pd.DataFrame(region_df).transpose())
-
-    clf = pickle.load("model"+sep+"8_logistic_regression_v3.pkl")
+    print(input_df)
+    file_path = "model" + sep + "8_logistic_regression_v3.pkl"
+    clf=pickle.load(open(f"{MODEL_FOLDER}/8_logistic_regression_v3.pkl", "rb"))
     schedule = clf.predict(input_df)
 
 
 
+
     print(schedule)
+    print("1")
 
     
 
