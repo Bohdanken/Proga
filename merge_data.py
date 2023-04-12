@@ -1,3 +1,4 @@
+
 import datetime
 import numpy as np
 import pandas as pd
@@ -142,3 +143,4 @@ df_weather_v4 = df_weather_reg.merge(df_events_v4,
                                      right_on=["event_region_title", "event_hour_level_event_datetimeEpoch"])
 
 df_weather_v4.to_csv(f"{OUTPUT_FOLDER}/{WEATHER_EVENTS_OUTPUT_DATA_FILE}", sep=";", index=False)
+
