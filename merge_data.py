@@ -34,8 +34,6 @@ df_isw = pd.read_csv(f"{INPUT_DATA_FOLDER}/{REPORTS_DATA_FILE}", sep=";")
 #load the content
 
 
-tfidf = pickle.load(open(f"{MODEL_FOLDER}/{tfidf_transformer_model}_{tfidf_transformer_version}.pkl", "rb"))
-cv = pickle.load(open(f"{MODEL_FOLDER}/{count_vectorizer_model}_{count_vectorizer_version}.pkl", "rb"))
 
 df_isw = df_isw.drop(index=0,axis=0) # 24 Feb, we have no data for that day
 df_isw['keywords'] = df_isw['data_lemmatized'].apply(lambda x: utils.conver_doc_to_vector(x))
