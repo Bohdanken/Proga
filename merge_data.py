@@ -1,3 +1,4 @@
+
 import datetime
 import numpy as np
 import pandas as pd
@@ -11,10 +12,10 @@ import utils
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-INPUT_DATA_FOLDER = "isw_data"
+INPUT_DATA_FOLDER = "2_isw_parsed"
 REPORTS_DATA_FILE = "table_of_data_processed.csv"
 
-OUTPUT_FOLDER = "final_data"
+OUTPUT_FOLDER = "all_data_final"
 ISW_OUTPUT_DATA_FILE = "all_isw.csv"
 WEATHER_EVENTS_OUTPUT_DATA_FILE = "all_hourly_weather_events.csv"
 
@@ -34,8 +35,6 @@ df_isw = pd.read_csv(f"{INPUT_DATA_FOLDER}/{REPORTS_DATA_FILE}", sep=";")
 #load the content
 
 
-tfidf = pickle.load(open(f"{MODEL_FOLDER}/{tfidf_transformer_model}_{tfidf_transformer_version}.pkl", "rb"))
-cv = pickle.load(open(f"{MODEL_FOLDER}/{count_vectorizer_model}_{count_vectorizer_version}.pkl", "rb"))
 
 df_isw = df_isw.drop(index=0,axis=0) # 24 Feb, we have no data for that day
 df_isw['keywords'] = df_isw['data_lemmatized'].apply(lambda x: utils.conver_doc_to_vector(x))
@@ -138,9 +137,10 @@ df_events_v3 = pd.DataFrame.from_dict(events_by_hour)
 
 df_events_v3["hour_level_event_datetimeEpoch"] = df_events_v3["hour_level_event_time"].apply(lambda x: int((x - datetime.datetime(1970,1,1)).total_seconds())  if not isNaN(x) else None)
 df_events_v4 = df_events_v3.copy().add_prefix('event_')
-df_weather_v4 = df_weather_reg.merge(df_events_v4,
-                                     how="left",
+df_weather_v4 = df_weather_reg.merge(df_events_v4, 
+                                     how="left", 
                                      left_on=["region_alt","hour_datetimeEpoch"],
                                      right_on=["event_region_title", "event_hour_level_event_datetimeEpoch"])
 
 df_weather_v4.to_csv(f"{OUTPUT_FOLDER}/{WEATHER_EVENTS_OUTPUT_DATA_FILE}", sep=";", index=False)
+
