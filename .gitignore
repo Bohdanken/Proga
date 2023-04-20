@@ -10,6 +10,6 @@ model/alarm_classifier_v2.pkl
 model/alarm_classifier_v1.pkl
 model/word_count_vector_calculated.pkl
 model/tfidf_vector_calculated.pkl
-model/8_random_forest_v1.pkl
+model/8_random_forest_v2.pkl
 .idea
 __pycache__
