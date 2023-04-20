@@ -2,6 +2,7 @@
 \weather_api_key.txt
 \data/weather_alarms_regions/all_weather_by_hour_v2.csv
 \data/weather_alarms_regions/alarms.csv
+\data/final_data/alarms.csv
 \data/final_data/all_isw.csv
 \data/final_data/all_hourly_weather_events.csv
 \model/8_svc_v1.pkl
@@ -11,4 +12,4 @@
 \model/tfidf_vector_calculated.pkl
 \model/8_random_forest_v1.pkl
 \.idea
-
+\__pycache__
