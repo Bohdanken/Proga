@@ -14,9 +14,9 @@ with open("weather_api_key.txt", "r") as f:
 URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
 
 """
-Input: 
+Input:
 timestamp: "2022-06-20T17:03:23.379152+02:00"  (ISO format, string)
-Output: {"2022-06-20": ["18:00:00", "19:00:00", "20:00:00", "21:00:00", "22:00:00", "23:00:00"], 
+Output: {"2022-06-20": ["18:00:00", "19:00:00", "20:00:00", "21:00:00", "22:00:00", "23:00:00"],
          "2022-06-21": ["00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00"]}
 """
 def next_24_timestamps(timestamp):
@@ -34,12 +34,12 @@ def next_24_timestamps(timestamp):
         else:
             dic[stamp1.isoformat()[:10]].append(stamp1.isoformat()[11:19])
         stamp1 += datetime.timedelta(hours=1)
-     
+
     return dic
-    
+
 
 """
-Input: 
+Input:
 timestamp: "2022-06-20T17:03:23.379152+02:00"  (ISO format, string). USE GMT+2 (Europe/Kyiv)!
 town: "Poltava,UA"
 Output: list of dictionaries, where keys are the headers of the csv file "all_weather_by_hour.csv"
@@ -56,12 +56,12 @@ def get_weather_forecast(timestamp, town):
                 "hour_temp","hour_feelslike","hour_humidity","hour_dew","hour_precip","hour_precipprob","hour_snow","hour_snowdepth"\
                 ,"hour_preciptype","hour_windgust","hour_windspeed","hour_winddir","hour_pressure","hour_visibility","hour_cloudcover",\
                 "hour_solarradiation","hour_solarenergy","hour_uvindex","hour_severerisk","hour_conditions","hour_icon","hour_source","hour_stations"]
-    
+
     for day in timepoints.keys():
         responce = requests.get(URL+town+"/"+day+"T"+timepoints[day][0]+"?key="+API_KEY+"&unitGroup=metric")
-        #print(URL+town+"/"+day+"T"+timepoints[day][0]+"?key="+API_KEY+"&unitGroup=metric")
+        # print(URL+town+"/"+day+"T"+timepoints[day][0]+"?key="+API_KEY+"&unitGroup=metric")
         responce = responce.json()
-    
+
         for hour in responce["days"][0]["hours"]:
             if hour["datetime"] in timepoints[day]:
                 newdict = dict()
@@ -85,7 +85,7 @@ def get_weather_forecast(timestamp, town):
                         else:
                             newdict[key] = hour[key[5:]]
                 output.append(newdict)
-                
+
 
 
     return output

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{%block title%}
+  <h3 class="not-bold">Alarm forecast for {{ chosen_date }}, for {{ region }}</h3>
+{%endblock%}
+{% block main %}
+  {% if chosen_date and region %}
+
+  <div class="table-container">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Time</th>
+          <th scope="col">Stasus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{time_array[0]}}</th>
+          <td>{{schedule[0]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[1]}}</th>
+          <td>{{schedule[1]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[2]}}</th>
+          <td>{{schedule[2]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[3]}}</th>
+          <td>{{schedule[3]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[4]}}</th>
+          <td>{{schedule[4]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[5]}}</th>
+          <td>{{schedule[5]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[6]}}</th>
+          <td>{{schedule[6]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[7]}}</th>
+          <td>{{schedule[7]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[8]}}</th>
+          <td>{{schedule[8]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[9]}}</th>
+          <td>{{schedule[9]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[10]}}</th>
+          <td>{{schedule[10]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[11]}}</th>
+          <td>{{schedule[11]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Time</th>
+          <th scope="col">Stasus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{time_array[12]}}</th>
+          <td>{{schedule[12]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[13]}}</th>
+          <td>{{schedule[13]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[14]}}</th>
+          <td>{{schedule[14]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[15]}}</th>
+          <td>{{schedule[15]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[16]}}</th>
+          <td>{{schedule[16]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[17]}}</th>
+          <td>{{schedule[17]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[18]}}</th>
+          <td>{{schedule[18]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[19]}}</th>
+          <td>{{schedule[19]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[20]}}</th>
+          <td>{{schedule[20]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[21]}}</th>
+          <td>{{schedule[21]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[22]}}</th>
+          <td>{{schedule[22]}}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{time_array[23]}}</th>
+          <td>{{schedule[23]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+{%endblock%}
