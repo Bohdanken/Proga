@@ -63,7 +63,7 @@ def calculate():
     weather_forecast_df["city"] = weather_forecast_df["city"].replace("Хмельницька область", "Хмельницький")
     input_df = merge_weather_isw_region(weather_forecast_df, text_df, pd.DataFrame(region_df).transpose())
 
-    with open("model"+sep+"8_random_forest_v2.pkl", "rb") as modelfile:
+    with open("D:/Proga/model/Series model/best_RandomForestClassifier_V.pkl", "rb") as modelfile:
         clf = pickle.load(modelfile, encoding="utf-8")
         schedule = clf.predict(input_df)
 
@@ -71,7 +71,7 @@ def calculate():
 
     time_array = []
 
-    for i in range(24):
+    for i in range(12):
         time_str = datetime.strftime(start_time + timedelta(hours=i), '%H:00')
         time_array.append(time_str)
 
