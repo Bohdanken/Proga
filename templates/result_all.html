@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}
+{% if regions %}
+<h3 class="not-bold">Alarm forecast for {{ chosen_date }} - {{ regions[region_idx] }}</h3>
+{%else%}
+<h3 class="not-bold">Alarm forecast for {{ chosen_date }} - {{ region }}</h3>
+{% endif %}
+{% endblock %}
+{% block main %}
+{% if chosen_date %}
+
+<div class="col-md-5">
+  <label for="region" class="form-label">Region</label>
+  <select
+    class="form-select"
+    id="region"
+    onchange="redirectToRegion(this.value)"
+    required=""
+  >
+    <option value="">Choose region...</option>
+    {% for r in regions %}
+    <option value="{{ r }}" {% if r == region %}selected{% endif %}>{{ r }}</option>
+    {% endfor %}
+  </select>
+</div>
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Time</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(12) %}
+      <tr>
+        <th scope="row">{{ time_array[i] }}</th>
+        <td id="prediction-{{ i }}">{{ predictions[region_idx][i] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Time</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(12, 24) %}
+      <tr>
+        <th scope="row">{{ time_array[i] }}</th>
+        <td id="prediction-{{ i }}">{{ predictions[region_idx][i] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script>
+  function redirectToRegion(region) {
+    if (region) {
+      window.location.href = "/" + region;
+    }
+  }
+</script>
+{% endif %}
+{% endblock %}

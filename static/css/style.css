@@ -1,0 +1,97 @@
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h3 {
+  text-align: center;
+  margin-top: 0;
+}
+.not-bold {
+  font-weight: normal;
+}
+
+div.main {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-label {
+  font-size: larger;
+  /* margin-top: 1rem; */
+}
+
+.form-control {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  margin-top: 2rem;
+}
+
+h5.about {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  margin: 40px 0;
+}
+h1.about {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin: 40px 0;
+}
+div.about {
+  /* font-size: 16px; */
+  margin: 40px 0;
+  margin-left: 20rem;
+  margin-right: 20rem;
+}
+
+p.about {
+  margin: 20px 0;
+}
+
+p,
+li {
+  font-size: larger;
+}
+table {
+  margin: 0 4rem;
+}
+.table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+p.small {
+  font-size: 16px;
+}
+
+.form-select {
+  width: 200px !important;
+}
+
+div.col-md-5 {
+  position: absolute;
+  top: 25%;
+  left: 40%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+p.authors {
+  margin-right: 1.5rem;
+  font-size: 17px;
+}
