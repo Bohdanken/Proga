@@ -220,7 +220,7 @@ def get_text_df(chosen_date):
         'Appendix A – Satellite Imagery(.|\n)+\.', "", x)).apply(lambda x: re.sub('Click here to expand the map below.', "", x))
     divided_text = divided_text.drop(['Unnamed: 0', 'main_html_v2', 'main_html_v3',
                                      'main_html_v4', 'main_html_v5', 'main_html_v6', 'main_html_v7'], axis=1)
-    nltk.download()
+    #nltk.download()
     words = [w for w in nltk.corpus.state_union.words() if w.isalpha()]
 
     divided_text['main_html'] = divided_text['main_html_v8'].apply(
