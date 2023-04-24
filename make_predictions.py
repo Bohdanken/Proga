@@ -25,7 +25,7 @@ app = Flask(__name__)
 time=datetime.now()
 model_path="model/Series model/"
 model="best_LogicRegression_V.pkl"
-path_to_forecasts="D:/Proga/data/forecasts/"
+path_to_forecasts="data/forecasts/"
 time_as_path='data/forecasts/2023-04-24 0.json'
 @app.route('/send_prediction', methods=['GET'])
 def send_forecast():
@@ -39,7 +39,7 @@ def send_forecast():
     param = data['file_path_from_project_root']
     name = ""
     if param == "":
-        name = str(time.date()) + " " + str(time.hour) + "->" + str(cutoff_time.date()) + " " + str(cutoff_time.hour)
+        name = str(time.date()) + " " + str(time.hour)
     else:
         name = param
     calculate(name)
@@ -76,10 +76,11 @@ def send_forecast():
 
 @app.route('/new_prediction', methods=['POST'])
 def calculate(name_par):
+    time_last=last_forecast("data/forecasts")
     time_now = datetime.now()
     cutoff_time = time_now + timedelta(hours=12)
     name = name_par
-    #if (time_now - time) < timedelta(hours=12):
+    #if (time_last - time) > timedelta(hours=12):
         #get_forecast_for_all()
     weather_forecast_df_all_regions = pd.read_json(time_as_path)#time_as_path
     schedules = []
@@ -121,6 +122,31 @@ def calculate(name_par):
     with open("data/predictions/regions.pkl", "wb") as f:
         pickle.dump(regions, f)
 
+def last_forecast(folder_path):
+    file_names = os.listdir(folder_path)
+
+    # Define a regular expression pattern to match the prediction time in the file names
+    pattern = r'^\d{4}-\d{2}-\d{2} \d{1,2}.json$'
+
+    # Initialize a variable to hold the latest prediction time
+    last_prediction_time = None
+
+    # Loop through the file names and find the latest prediction time
+    for file_name in file_names:
+        # Check if the file name matches the pattern
+        match = re.match(pattern, file_name)
+        if match:
+            # Extract the prediction time from the matched pattern
+            prediction_time_str = file_name[:-5]
+
+            # Convert the prediction time string to a datetime object
+            prediction_time = datetime.strptime(prediction_time_str, '%Y-%m-%d %H')
+
+            # Check if this prediction time is later than the current latest prediction time
+            if last_prediction_time is None or prediction_time > last_prediction_time:
+                last_prediction_time = prediction_time
+    return last_prediction_time
+
 @app.route('/update', methods=['POST'])
 def get_forecast_for_all():
     df_regions = pd.read_csv("data"+sep+"weather_alarms_regions"+sep+"regions.csv", sep=",")
@@ -139,5 +165,5 @@ def get_forecast_for_all():
 
 if __name__ == '__main__':
     cutoff_time = datetime.now() + timedelta(hours=12)
-    name = str(time.date()) + " " + str(time.hour) + "__" + str(cutoff_time.date()) + " " + str(cutoff_time.hour)
+    name = str(time.date()) + " " + str(time.hour)
     calculate(name)
