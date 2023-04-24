@@ -69,7 +69,7 @@ def calculate():
     region = request.form['region']
     time_now = datetime.now()
     if region == 'All':
-        #if (time_now - time) < timedelta(hours=12):
+        #if (time_now - time) > timedelta(hours=12):
             #get_forecast_for_all()
         weather_forecast_df_all_regions = pd.read_json(time_as_path)#time_as_path
         schedules = []
@@ -106,7 +106,7 @@ def calculate():
         # save predictions to file
         with open("data/predictions/predictions.pkl", "wb") as f:
             pickle.dump(predictions, f)
-        name=str(time.date())+" "+str(time.hour)+"->"+str(cutoff_time.date())+" "+str(cutoff_time.hour)
+        name=str(time.date())+" "+str(time.hour)
         with open(f"data/predicted_alarms/{name}.pkl", "wb") as f:
             pickle.dump(predictions, f)
 

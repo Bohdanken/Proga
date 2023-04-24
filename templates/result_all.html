@@ -40,22 +40,6 @@
       {% endfor %}
     </tbody>
   </table>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Time</th>
-        <th scope="col">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for i in range(12, 24) %}
-      <tr>
-        <th scope="row">{{ time_array[i] }}</th>
-        <td id="prediction-{{ i }}">{{ predictions[region_idx][i] }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
 </div>
 <script>
   function redirectToRegion(region) {
