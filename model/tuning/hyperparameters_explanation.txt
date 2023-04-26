@@ -1,0 +1,56 @@
+logistic regression
+
+penalty: testing required
+
+dual: only for l2 penalty
+
+C: 1, testing required
+    we expect non-regular coefficients
+
+fit_intercept: testing required
+
+intercept_scaling: no
+    because only for liblinear solver
+
+class_weight: balanced
+    because of class proportion 25/75 and low true-positive rate
+
+random_state: const (1)
+    for result reproducability
+
+solver:
+    sag, saga - fast on large datasets
+    newton-cholesky - n_samples >> n_features, suitable for binary classification,
+                    especially if y is imbalanced (all-vs-one classification)
+                    but quadratic to n_features memory usage
+    liblinear - should be ok
+    newton-cg - no, too large dataset; maybe on subset
+    lbfgs - probably no, because large n_features and (probably) quite sparce dataset
+
+max_iter: more than 100 have no improvement, 50 is +-ok; more testing required
+
+multi_class: ovr, because y is binary
+
+verbose: testing required
+    verbose=0: No output is printed during training.
+    verbose=1: The algorithm prints one line of output for each epoch (or iteration) of training.
+    verbose=2: The algorithm prints more detailed information for each epoch, such as the loss function value and training accuracy.
+    verbose=3: The algorithm prints even more detailed information for each epoch, including the values of each weight and bias parameter.
+
+warm_start: false; maybe true during one TimeSeriesSplit
+
+n_jobs: depending on RAM, hopefuly 2 (only for multi_class='ovr')
+
+l1_ratio: testing required (only for penalty='elasticnet' (only usable in solver='saga'))
+
+
+
+
+
+
+
+
+
+
+
+
