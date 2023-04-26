@@ -1,6 +1,7 @@
 logistic regression
 
 penalty: testing required
+    *l1 and l2 give same results, except l1 takes a lot more time
 
 dual: only for l2 penalty
 
@@ -14,22 +15,29 @@ intercept_scaling: no
 
 class_weight: balanced
     because of class proportion 25/75 and low true-positive rate
+    *dropped score to ~0.55
 
 random_state: const (1)
     for result reproducability
 
 solver:
     sag, saga - fast on large datasets
+        (data might need scaling preprocessing)
+        *similar to default, a bit less score
     newton-cholesky - n_samples >> n_features, suitable for binary classification,
                     especially if y is imbalanced (all-vs-one classification)
                     but quadratic to n_features memory usage
+        *too low score (~0.75), also RAM usage is comparatively average
     liblinear - should be ok
+        *a bit worse than default (0.859 vs 0.869)
     newton-cg - no, too large dataset; maybe on subset
     lbfgs - probably no, because large n_features and (probably) quite sparce dataset
+        *default, works best
 
 max_iter: more than 100 have no improvement, 50 is +-ok; more testing required
 
 multi_class: ovr, because y is binary
+    *no difference
 
 verbose: testing required
     verbose=0: No output is printed during training.
@@ -38,8 +46,10 @@ verbose: testing required
     verbose=3: The algorithm prints even more detailed information for each epoch, including the values of each weight and bias parameter.
 
 warm_start: false; maybe true during one TimeSeriesSplit
+    *no difference
 
 n_jobs: depending on RAM, hopefuly 2 (only for multi_class='ovr')
+    *upd no difference on saga solver
 
 l1_ratio: testing required (only for penalty='elasticnet' (only usable in solver='saga'))
 
