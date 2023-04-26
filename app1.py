@@ -23,7 +23,7 @@ import os
 
 from run import merge_weather_isw_region
 
-API_TOKEN = "ugwUH-FCAnK4q0Dkk0rJmTkffbp5q7V-YYZJWcW6EdkBxDyRE9k-LtXdu=19PL=o"
+API_TOKEN = ""
 
 df_regions = pd.read_csv(
         "data"+sep+"weather_alarms_regions"+sep+"regions.csv", sep=",")
@@ -155,36 +155,49 @@ def calculate_endpoint():
     json_data = request.get_json()
 
     if json_data.get("token") is None:
-        raise InvalidUsage("token is required", status_code=400)
+        return {"error": "token is required"}, 400
 
     token = json_data.get("token")
 
     if token != API_TOKEN:
-        raise InvalidUsage("wrong API token", status_code=403)
+        return {"error": "wrong API token"}, 403
 
-    date = ""
+    date_string = ""
     if json_data.get("date"):
-        date = json_data.get("date")
+        date_string = json_data.get("date")
 
-    query = datetime.strptime(date, '%Y-%m-%d')
+    try:
+        query = datetime.strptime(date_string, '%Y-%m-%d')
+    except ValueError:
+        return {"error": "Please enter a valid date YY-mm-dd"}, 400
 
     time = ""
     if json_data.get("time"):
         time = json_data.get("time")
+    try:
+        time_query = datetime.strptime(time, "%H:%M")
+    except ValueError:
+        return {"error": "Please enter a valid time in the format HH:MM."}, 400
 
-    time_query = datetime.strptime(time, "%H:%M")
+    today = datetime.combine(date.today() + timedelta(days=1),datetime.min.time())
 
-    chosen_date = datetime.combine(query.date(), time_query.time())
+    if (query < datetime(2023, 1, 20) or query > today):
+        return {"error": "Please enter a valid date (between 2023-01-20 and tomorrow)"}, 400
 
     region = ""
     if json_data.get("region"):
         region = json_data.get("region")
 
+    regions = df_regions['center_city_en'].tolist()
+
+    if (region not in regions and region != "All"):
+        return {"error": "Please enter a valid region"}, 400
+
+    chosen_date = datetime.combine(query.date(), time_query.time())
+
     chosen_date_string = chosen_date.isoformat()
     chosen_date_string = chosen_date_string.replace("-", "_").replace(":", "_")
     chosen_date_string = chosen_date_string[:-9] + "_" + chosen_date_string[-8:]
-
-    regions = df_regions['center_city_en'].tolist()
 
     time_array = next_24_hours(time_query)
 
@@ -192,8 +205,9 @@ def calculate_endpoint():
         predictions = get_predictions(chosen_date)
         predictions = predictions.tolist()
 
-        dictionary = {region: prediction for region, prediction in zip(regions, predictions)}
+        dictionary = {region: {time: prediction[i] for i, time in enumerate(time_array)} for region, prediction in zip(regions, predictions)}
         result = {
+        "last_model_train_time": "2023-04-20T21:09:44Z",
         "model": "8_random_forest_v2",
         "date": chosen_date_string,
         "predictions": dictionary
@@ -202,11 +216,17 @@ def calculate_endpoint():
         predictions = get_prediction(chosen_date, region)
         predictions = predictions.tolist()
 
+        dictionary = {}
+        for time, prediction in zip(time_array, predictions):
+            dictionary[time] = prediction
+
+
         result = {
+        "last_model_train_time": "2023-04-20T21:09:44Z",
         "model": "8_random_forest_v2",
         "date": chosen_date_string,
         "region": region,
-        "predictions": predictions
+        "predictions": dictionary,
         }
 
     return result
@@ -256,7 +276,7 @@ def calculate():
             return render_template('result_all.html', chosen_date=chosen_date, regions=regions,
                                predictions=predictions, time_array=time_array, region_idx=0)
         else:
-            predictions = get_prediction(chosen_date)
+            predictions = get_predictions(chosen_date)
 
             return render_template('result_all.html', chosen_date=chosen_date, regions=regions,
                                 predictions=predictions, time_array=time_array, region_idx=0)
@@ -278,13 +298,13 @@ def calculate():
 
 
 if __name__ == '__main__':
-    date = "2023-04-26"
+    # date = "2023-04-26"
 
-    query = datetime.strptime(date, '%Y-%m-%d')
+    # query = datetime.strptime(date, '%Y-%m-%d')
 
-    time1 = "00:01"
-    time_query = datetime.strptime(time1, "%H:%M")
+    # time1 = "00:01"
+    # time_query = datetime.strptime(time1, "%H:%M")
 
-    chosen_date = datetime.combine(query.date(), time_query.time())
-    get_predictions(chosen_date)
+    # chosen_date = datetime.combine(query.date(), time_query.time())
+    # get_predictions(chosen_date)
     app.run(debug=True)
