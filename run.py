@@ -11,6 +11,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import nltk
+import json
 
 
 from num2words import num2words
@@ -47,11 +48,6 @@ def get_date_from_user():
             print("Wrong format! Try again")
 
     return datetime.combine(query.date(),time_query.time())
-
-
-
-
-
 
 def remove_names_and_date(page_html_text):
     parsed_html = BeautifulSoup(page_html_text, features="html.parser")
@@ -132,7 +128,7 @@ def merge_weather_isw_region(df_weather, df_isw, df_region):
     df_v2["hour_conditions"] = df_v2["hour_conditions"].apply(lambda x: x.split(",")[0])
     label_encoder = pickle.load(open("model"+sep+"weather_conditions_label_encoder.pkl", "rb"))
 
-    df_v2["hour_conditions_id"] = label_encoder.fit_transform(df_v2["hour_conditions"])
+    df_v2["hour_conditions_id"] = label_encoder.transform(df_v2["hour_conditions"])
     tmp_fields_to_exlude = [
     "city_latitude",
     "city_longitude",
@@ -169,7 +165,14 @@ def merge_weather_isw_region(df_weather, df_isw, df_region):
     "hour_solarenergy",
     "hour_icon",
     "hour_source",
-    "hour_stations"
+    "hour_stations",
+    #6 fields to exlude
+    # "day_solarradiation",
+    # "day_solarenergy",
+    # "day_uvindex",
+    # "hour_visibility",
+    # "hour_solarradiation",
+    # "hour_uvindex"
     ]
 
     df_work_v3 = df_v2.drop(tmp_fields_to_exlude, axis=1).fillna(method="ffill")
@@ -190,6 +193,9 @@ def merge_weather_isw_region(df_weather, df_isw, df_region):
     df_work_v3['hour_visibility'] = df_work_v3['hour_visibility'].astype('float64')
     df_work_v3['hour_solarradiation'] = df_work_v3['hour_solarradiation'].astype('float64')
     df_work_v3['hour_uvindex'] = df_work_v3['hour_uvindex'].astype('float64')
+
+
+    # df_work_v3.to_csv("df_work_v3.csv", sep=";", index=False)
 
     df_work_v3_csr = scipy.sparse.csr_matrix(df_work_v3.values)
 

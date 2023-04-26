@@ -17,7 +17,7 @@ div.main {
   top: 50%;
   left: 50%;
   margin-right: -50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
 }
 
 form {
@@ -40,9 +40,27 @@ form {
   margin-top: 2rem;
 }
 
-h1.how {
-  margin-top: 2rem;
-  margin-left: 5rem;
+h5.about {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  margin: 40px 0;
+}
+h1.about {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin: 40px 0;
+}
+div.about {
+  /* font-size: 16px; */
+  margin: 40px 0;
+  margin-left: 20rem;
+  margin-right: 20rem;
+}
+
+p.about {
+  margin: 20px 0;
 }
 
 p,
@@ -57,6 +75,23 @@ table {
   justify-content: center;
   align-items: center;
 }
-p.small{
+p.small {
   font-size: 16px;
+}
+
+.form-select {
+  width: 200px !important;
+}
+
+div.col-md-5 {
+  position: absolute;
+  top: 25%;
+  left: 40%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+p.authors {
+  margin-right: 1.5rem;
+  font-size: 17px;
 }
