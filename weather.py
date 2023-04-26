@@ -3,11 +3,14 @@ import datetime
 import pytz
 import pandas
 
+import json
+
 API_KEY = ""
 with open("weather_api_key.txt", "r") as f:
     API_KEY = f.read()
     f.close()
-
+if API_KEY.endswith("\n"):
+    API_KEY = API_KEY[:-1]
 
 
 

@@ -12,4 +12,7 @@ model/word_count_vector_calculated.pkl
 model/tfidf_vector_calculated.pkl
 model/8_random_forest_v2.pkl
 .idea
+.gitignore
+/model
 __pycache__
+Key pair.pem
