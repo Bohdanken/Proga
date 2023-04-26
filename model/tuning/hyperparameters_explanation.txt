@@ -15,7 +15,8 @@ intercept_scaling: no
 
 class_weight: balanced
     because of class proportion 25/75 and low true-positive rate
-    *dropped score to ~0.55
+    *dropped score to ~0.55 but increased true-positive count
+     might be crucial to overcome all-zero output
 
 random_state: const (1)
     for result reproducability
