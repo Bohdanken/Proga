@@ -1,0 +1,16 @@
+cold start:
+7 min
+13.5 min
+17 min
+22 min
+
+warm start:
+6.4 min
+11.5 min
+16.4 min
+14.8 min
+
+confusion graphs are almost identical
+
+Conclusion:
+warm_start does not affect result but decrease training time

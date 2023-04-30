@@ -1,0 +1,2 @@
+2023-04-30 14:27:31.298200
+{'C': 1.0, 'class_weight': 'balanced', 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'l1_ratio': None, 'max_iter': 100, 'multi_class': 'auto', 'n_jobs': None, 'penalty': 'l2', 'random_state': 1, 'solver': 'newton-cholesky', 'tol': 0.0001, 'verbose': 2, 'warm_start': False}

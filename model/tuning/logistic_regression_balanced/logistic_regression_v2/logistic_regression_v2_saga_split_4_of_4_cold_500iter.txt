@@ -1,0 +1,2 @@
+2023-04-30 22:30:17.778569
+{'C': 1.0, 'class_weight': 'balanced', 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'l1_ratio': None, 'max_iter': 500, 'multi_class': 'auto', 'n_jobs': None, 'penalty': 'l2', 'random_state': 1, 'solver': 'saga', 'tol': 0.0001, 'verbose': 4, 'warm_start': True}
