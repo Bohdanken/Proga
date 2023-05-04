@@ -146,16 +146,6 @@
             today.getMonth(),
             today.getDate() + 2
           );
-
-          if (
-            enteredDate !==
-              $.datepicker.formatDate("yy-mm-dd", enteredDateTime) ||
-            enteredDateTime < minDate ||
-            enteredDateTime > maxDate
-          ) {
-            alert("Please enter a valid date between 2023-01-20 and tomorrow.");
-            event.preventDefault();
-          }
         });
       });
     </script>

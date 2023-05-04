@@ -64,7 +64,7 @@ def get_prediction(chosen_date, region):
     input_df = merge_weather_isw_region(
         weather_forecast_df, text_df, pd.DataFrame(region_df).transpose())
 
-    with open("model"+sep+"8_random_forest_v2.pkl", "rb") as modelfile:
+    with open("model"+sep+"8_logistic_regression_v2.pkl", "rb") as modelfile:
         clf = pickle.load(modelfile, encoding="utf-8")
         schedule = clf.predict(input_df)
 
@@ -101,7 +101,7 @@ def get_predictions(chosen_date):
         "Хмельницька область", "Хмельницький")
     input_df = merge_weather_isw_region(df_forecast, text_df, df_regions)
 
-    with open("model"+sep+"8_random_forest_v2.pkl", "rb") as modelfile:
+    with open("model"+sep+"8_logistic_regression_v2.pkl", "rb") as modelfile:
         clf = pickle.load(modelfile, encoding="utf-8")
         schedule = clf.predict(input_df)
 
@@ -208,7 +208,7 @@ def calculate_endpoint():
         dictionary = {region: {time: prediction[i] for i, time in enumerate(time_array)} for region, prediction in zip(regions, predictions)}
         result = {
         "last_model_train_time": "2023-04-20T21:09:44Z",
-        "model": "8_random_forest_v2",
+        "model": "8_logistic_regression_v2.pkl",
         "date": chosen_date_string,
         "predictions": dictionary
         }
@@ -223,7 +223,7 @@ def calculate_endpoint():
 
         result = {
         "last_model_train_time": "2023-04-20T21:09:44Z",
-        "model": "8_random_forest_v2",
+        "model": "8_logistic_regression_v2.pkl",
         "date": chosen_date_string,
         "region": region,
         "predictions": dictionary,
