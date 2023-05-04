@@ -29,11 +29,8 @@ model = "logistic_regression_v11_lbfgs_split3.pkl"
 path_to_forecasts = "data/forecasts/"
 time_as_path = 'data/forecasts/2023-04-24 2.json'
 
-
 @app.route('/send_prediction', methods=['POST'])
 def send_forecast():
-    now = datetime.now()
-    now_str = str(now.date()) + " " + str(now.hour)
     last_model_train_time = datetime.fromtimestamp(os.path.getmtime(f"{model_path}{model}")).strftime("%Y-%m-%d %H:%M")
     meta_information = "Slim Shady"
     data = request.json
@@ -41,23 +38,20 @@ def send_forecast():
     date_requested = data["date"]
     time_requested = data['time']
     date_time_requested = datetime.strptime(f"{date_requested} {time_requested}", "%Y-%m-%d %H")
+    date_time_requested_str=str(date_time_requested.date()) + " " + str(date_time_requested.hour)
+    predictions,last_alarm_forecasts=check_for_existing_alarm_prediction_and_calculate(date_requested,time_requested,date_time_requested,date_time_requested_str)
+
+    return sendPredict(predictions, region, last_model_train_time, last_alarm_forecasts, meta_information)
+
+
+def check_for_existing_alarm_prediction_and_calculate(date_requested,time_requested,date_time_requested,date_time_requested_str):
     last_alarm_forecasts = last_forecast("data/predicted_alarms", date_requested, time_requested)
     last_weather_forecasts = last_forecast("data/forecasts", date_requested, time_requested)
     predictions = None
     if len(last_alarm_forecasts) == 0:
-        last_weather_forecast = None
-        if (len(last_weather_forecasts) == 0):
-            get_forecast_for_all(date_time_requested)
-            last_weather_forecast = pd.read_json(f"data/forecasts/{now_str}.pkl")
-        if (len(last_weather_forecasts) == 1):
-            last_weather_forecast = pd.read_json(f"data/forecasts/{last_weather_forecasts[0]}.json")
-        if (len(last_weather_forecasts) == 2):
-            last_weather_forecast1 = pd.read_json(f"data/forecasts/{last_weather_forecasts[0]}.json")
-            last_weather_forecast2 = pd.read_json(f"data/forecasts/{last_weather_forecasts[1]}.json")
-            last_weather_forecast = combine_2_dates(last_weather_forecast1, last_weather_forecast2, date_time_requested,
-                                                    on="hour_datetime")
-        calculate(now_str, last_weather_forecast, date_time_requested)
-        predictions = pd.read_json(f"data/predicted_alarms/{now_str}.json")
+        last_weather_forecast = calculate_forecast(last_weather_forecasts, date_time_requested, date_time_requested_str)
+        calculate(date_time_requested_str, last_weather_forecast, date_time_requested)
+        predictions = pd.read_json(f"data/predicted_alarms/{date_time_requested_str}.json")
     elif len(last_alarm_forecasts) == 1:
         predictions = pd.read_json(f"data/predicted_alarms/{last_alarm_forecasts[0]}.json")  # pickle.load(f)
     elif len(last_alarm_forecasts) == 2:
@@ -65,7 +59,23 @@ def send_forecast():
         prediction2 = pd.read_json(f"data/predicted_alarms/{last_alarm_forecasts[1]}.json")
         predictions = combine_2_dates(prediction1, prediction2, date_time_requested, on="hour_datetime")
         predictions.drop("hour_datetime")
+    return predictions, last_alarm_forecasts
+def calculate_forecast(last_weather_forecasts,date_time_requested,date_time_requested_str):
+    last_weather_forecast=None
+    if (len(last_weather_forecasts) == 0):
+        get_forecast_for_all(date_time_requested)
+        last_weather_forecast = pd.read_json(f"data/forecasts/{date_time_requested_str}.pkl")
+    elif (len(last_weather_forecasts) == 1):
+        last_weather_forecast = pd.read_json(f"data/forecasts/{last_weather_forecasts[0]}.json")
+    elif (len(last_weather_forecasts) == 2):
+        last_weather_forecast1 = pd.read_json(f"data/forecasts/{last_weather_forecasts[0]}.json")
+        last_weather_forecast2 = pd.read_json(f"data/forecasts/{last_weather_forecasts[1]}.json")
+        last_weather_forecast = combine_2_dates(last_weather_forecast1, last_weather_forecast2, date_time_requested,
+                                                on="hour_datetime")
+    return last_weather_forecast
 
+
+def sendPredict(predictions,region,last_model_train_time,last_alarm_forecasts,meta_information):
     with open("data/predictions/time_array.pkl", "rb") as f:
         time_array = pickle.load(f)
     with open("data/predictions/regions.pkl", "rb") as f:
@@ -75,16 +85,12 @@ def send_forecast():
     for i in range(predictions.shape[0]):
         # Get the region name
         region_name = regions[i]
-
         # Get the row of predictions for this region
         region_predictions = predictions[i]
-
         # Convert the row of predictions to a list of boolean values
         region_forecast = region_predictions.astype(bool).tolist()
-
         # Build a dictionary for this region with the time strings as keys and the forecast values as values
         region_dict = dict(zip(time_array, region_forecast))
-
         # Add the region dictionary to the region forecasts dictionary
         region_forecasts[region_name] = region_dict
     if region not in regions:
@@ -104,7 +110,6 @@ def send_forecast():
         }
     json_response = json.dumps(response_dict)
     return Response(json_response, status=200, mimetype='application/json')
-
 
 @app.route('/calculate', methods=['POST'])
 def calculate(name, weather_forecast_df_all_regions, time_used):
@@ -233,21 +238,14 @@ def get_forecast_for_all(chosen_date):
     time_as_path = path_to_forecasts + str(str(chosen_date.date()) + " " + str(chosen_date.hour) + ".json", )
     df_forecast.to_json(path_or_buf=time_as_path)
 
-
 # print(last_forecast("data/forecasts", "2023-04-24", "15"))
 # get_forecast_for_all(datetime.strptime("2023-04-24 15", "%Y-%m-%d %H" ))
 
+time=datetime.now()
+time_str = str(time.date()) + " " + str(time.hour)
+last_weather_forecasts = last_forecast("data/forecasts", time.date(), time.hour)
+predictions,last_alarm_forecasts=check_for_existing_alarm_prediction_and_calculate(time.date(),time.hour,time,time_str)
+last_weather_forecast = calculate_forecast(last_weather_forecasts, time, time_str)
 
 if __name__ == '__main__':
-    """
-    name = str(time.date()) + " " + str(time.hour)
-    last_prediction = last_forecast("data/forecasts")
-    last_prediction_time = str(last_prediction.date()) + " " + str(last_prediction.hour)
-    time_now = datetime.now()
-    cutoff_time = time_now + timedelta(hours=12)
-    if (time_now - last_prediction) > timedelta(hours=12):
-        get_forecast_for_all()
-        last_prediction_time = str(time_now.date()) + " " + str(time_now.hour)
-    calculate(name,last_prediction_time)
-    """
     app.run(debug=True)
