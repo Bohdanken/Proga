@@ -55,6 +55,11 @@ def text_processing(file_name):
     with open(file_name, "r", encoding='utf-8') as cfile:
         # url=cfile.readline()
         parsed_html = BeautifulSoup(cfile.read(), features="html.parser")
+        map_tags = parsed_html.find_all(
+            lambda tag: tag.name == 'p' and 'ISW’s' in tag.text)
+
+        for map_tag in map_tags:
+            map_tag.decompose()
         title = parsed_html.head. find('title').text
         textS_title = parsed_html.body.find(
             'h1', attrs={"id": 'page-title'}).text

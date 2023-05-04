@@ -167,12 +167,12 @@ def merge_weather_isw_region(df_weather, df_isw, df_region):
     "hour_source",
     "hour_stations",
     #6 fields to exlude
-    # "day_solarradiation",
-    # "day_solarenergy",
-    # "day_uvindex",
-    # "hour_visibility",
-    # "hour_solarradiation",
-    # "hour_uvindex"
+     "day_solarradiation",
+     "day_solarenergy",
+     "day_uvindex",
+     "hour_visibility",
+     "hour_solarradiation",
+     "hour_uvindex"
     ]
 
     df_work_v3 = df_v2.drop(tmp_fields_to_exlude, axis=1).fillna(method="ffill")
@@ -187,12 +187,12 @@ def merge_weather_isw_region(df_weather, df_isw, df_region):
     for i in default_values:
         df_work_v3.fillna(value=i, inplace=True)
 
-    df_work_v3['day_solarradiation'] = df_work_v3['day_solarradiation'].astype('float64')
-    df_work_v3['day_solarenergy'] = df_work_v3['day_solarenergy'].astype('float64')
-    df_work_v3['day_uvindex'] = df_work_v3['day_uvindex'].astype('float64')
-    df_work_v3['hour_visibility'] = df_work_v3['hour_visibility'].astype('float64')
-    df_work_v3['hour_solarradiation'] = df_work_v3['hour_solarradiation'].astype('float64')
-    df_work_v3['hour_uvindex'] = df_work_v3['hour_uvindex'].astype('float64')
+    #df_work_v3['day_solarradiation'] = df_work_v3['day_solarradiation'].astype('float64')
+    #df_work_v3['day_solarenergy'] = df_work_v3['day_solarenergy'].astype('float64')
+    #df_work_v3['day_uvindex'] = df_work_v3['day_uvindex'].astype('float64')
+    #df_work_v3['hour_visibility'] = df_work_v3['hour_visibility'].astype('float64')
+    #df_work_v3['hour_solarradiation'] = df_work_v3['hour_solarradiation'].astype('float64')
+    #df_work_v3['hour_uvindex'] = df_work_v3['hour_uvindex'].astype('float64')
 
 
     # df_work_v3.to_csv("df_work_v3.csv", sep=";", index=False)
