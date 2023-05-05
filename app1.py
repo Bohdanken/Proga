@@ -55,7 +55,7 @@ def alarm_forecast(chosen_region):
     chosen_date_string = chosen_date_string.replace("-", "_").replace(":", "_")
     chosen_date_string = chosen_date_string[:-9] + "_" + chosen_date_string[-8:]
 
-    with open(f"data/predictions/prediction_All_regions_{chosen_date_string}.pkl", "rb") as f:
+    with open(f"data/predictions/predictions.pkl", "rb") as f:
         predictions = pickle.load(f)
 
     with open("data/predictions/time_array.pkl", "rb") as f:
@@ -69,6 +69,8 @@ def alarm_forecast(chosen_region):
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
+    with open("data/predictions/regions.pkl", "rb") as f:
+        regions = pickle.load(f)
     date = request.form['date']
     query = datetime.strptime(date, '%Y-%m-%d')
     time1 = request.form['time']
@@ -78,7 +80,7 @@ def calculate():
     payload = {
     "region": region,
     "date" : date,
-    "time" : time1
+    "time" : str(time_query.hour)
 }
     headers = {'Content-type': 'application/json'}
 
@@ -92,13 +94,35 @@ def calculate():
         response_json = response.json()
         predictions=response_json["regions_forecast"]
         time_array=[]
-        for time in predictions:
+        value_array=[]
+        for time, value in predictions.items():
+            #date_time=datetime.strptime(time,'%Y-%m-%d %H')
             time_array.append(time)
+            value_array.append(value)
+        with open("data/predictions/regions.pkl", "wb") as f:
+            pickle.dump(regions,f)
+        with open("data/predictions/chosen_date.pkl", "wb") as f:
+            pickle.dump(chosen_date,f)
+        with open("data/predictions/time_array.pkl", "wb") as f:
+            pickle.dump(time_array,f)
     else:
         print(f"Request failed with status code {response.status_code}")
-
+    if region not in regions:
+        region_names = list(predictions.keys())
+        date_strs = list(set([date_str for region in predictions.values() for date_str in region.keys()]))
+        dates = sorted([np.datetime64(date_str.replace(' ', 'T')) for date_str in date_strs])
+        forecast_matrix = np.zeros((len(region_names), len(dates)), dtype=bool)
+        for i, region_name in enumerate(region_names):
+            for j, date in enumerate(dates):
+                date_str = str(date).replace('T', ' ')
+                if date_str in predictions[region_name]:
+                    forecast_matrix[i, j] = predictions[region_name][date_str]
+        with open(f"data/predictions/predictions.pkl", "wb") as f:
+            pickle.dump(forecast_matrix,f)
+        return render_template('result_all.html', chosen_date=chosen_date, regions=regions,
+                               predictions=forecast_matrix, time_array=time_array, region_idx=0)
     return render_template('result.html', chosen_date=chosen_date, region=region,
-                       schedule=predictions, time_array=time_array)
+                       schedule=value_array, time_array=time_array)
 
 if __name__ == '__main__':
     # date = "2023-04-26"
