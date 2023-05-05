@@ -75,10 +75,30 @@ def calculate():
     time_query = datetime.strptime(time1, "%H:%M")
     chosen_date = datetime.combine(query.date(), time_query.time())
     region = request.form['region']
-    
-    return render_template('result.html', chosen_date=chosen_date, region=region,
-                                schedule=schedule, time_array=time_array)
+    payload = {
+    "region": region,
+    "date" : date,
+    "time" : time1
+}
+    headers = {'Content-type': 'application/json'}
 
+    # Send the JSON payload to the API using a POST request
+    response = requests.post('http://34.227.228.224:7000/send_prediction', data=json.dumps(payload), headers=headers)
+    time_array=None
+    predictions=None
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Parse the JSON response
+        response_json = response.json()
+        predictions=response_json["regions_forecast"]
+        time_array=[]
+        for time in predictions:
+            time_array.append(time)
+    else:
+        print(f"Request failed with status code {response.status_code}")
+
+    return render_template('result.html', chosen_date=chosen_date, region=region,
+                       schedule=predictions, time_array=time_array)
 
 if __name__ == '__main__':
     # date = "2023-04-26"

@@ -115,7 +115,7 @@ def read_files_to_df(folder_path, date, starting_hour):
 
 
 def calculate_forecast(last_weather_forecasts,date_time_requested):
-    date_time_requested_str=datetime.strftime(date_time_requested ,"%Y-%m-%d %H")
+    date_time_requested_str=str(date_time_requested.date()) + " " + str(date_time_requested.hour)
     last_weather_forecast=None
     if (len(last_weather_forecasts) == 0):
         get_forecast_for_all(date_time_requested)
