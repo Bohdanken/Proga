@@ -226,8 +226,6 @@ def last_forecast1(folder_path, date_requested, time_requested):
                 last_predictions = current_pair
             elif closest_prediction_times[i]>last_prediction:
                 last_prediction=closest_prediction_times[i]
-    if not last_predictions:
-        last_predictions=[last_prediction,None,None]
     # Return the list of filenames for the closest prediction times (up to 2)
     return last_predictions
 

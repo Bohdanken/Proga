@@ -85,7 +85,7 @@ def calculate():
     headers = {'Content-type': 'application/json'}
 
     # Send the JSON payload to the API using a POST request
-    response = requests.post('http://34.227.228.224:7000/send_prediction', data=json.dumps(payload), headers=headers)
+    response = requests.post('http://localhost:7000/send_prediction', data=json.dumps(payload), headers=headers)
     time_array=None
     predictions=None
     # Check if the request was successful (status code 200)
@@ -108,19 +108,14 @@ def calculate():
     else:
         print(f"Request failed with status code {response.status_code}")
     if region not in regions:
-        region_names = list(predictions.keys())
-        date_strs = list(set([date_str for region in predictions.values() for date_str in region.keys()]))
-        dates = sorted([np.datetime64(date_str.replace(' ', 'T')) for date_str in date_strs])
-        forecast_matrix = np.zeros((len(region_names), len(dates)), dtype=bool)
-        for i, region_name in enumerate(region_names):
-            for j, date in enumerate(dates):
-                date_str = str(date).replace('T', ' ')
-                if date_str in predictions[region_name]:
-                    forecast_matrix[i, j] = predictions[region_name][date_str]
+        result = []
+        for region, forecast in predictions.items():
+            for date, value in forecast.items():
+                result.append([region, date, value])
         with open(f"data/predictions/predictions.pkl", "wb") as f:
-            pickle.dump(forecast_matrix,f)
+            pickle.dump(result,f)
         return render_template('result_all.html', chosen_date=chosen_date, regions=regions,
-                               predictions=forecast_matrix, time_array=time_array, region_idx=0)
+                               predictions=result, time_array=time_array, region_idx=0)
     return render_template('result.html', chosen_date=chosen_date, region=region,
                        schedule=value_array, time_array=time_array)
 
