@@ -69,12 +69,13 @@ def alarm_forecast(chosen_region):
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    url = 'http://127.0.0.1:7000/api/endpoint'
-    headers = {'Content-Type': 'application/json'}
-    data = {"region": "",
-            "date" : "2023-04-24",
-            "time" : "13"}
-
+    date = request.form['date']
+    query = datetime.strptime(date, '%Y-%m-%d')
+    time1 = request.form['time']
+    time_query = datetime.strptime(time1, "%H:%M")
+    chosen_date = datetime.combine(query.date(), time_query.time())
+    region = request.form['region']
+    
     return render_template('result.html', chosen_date=chosen_date, region=region,
                                 schedule=schedule, time_array=time_array)
 
