@@ -78,6 +78,7 @@ def calculate():
     chosen_date = datetime.combine(query.date(), time_query.time())
     region = request.form['region']
     payload = {
+    "token": "ugwUH-FCAnK4q0Dkk0rJmTkffbp5q7V-YYZJWcW6EdkBxDyRE9k",
     "region": region,
     "date" : date,
     "time" : str(time_query.hour)

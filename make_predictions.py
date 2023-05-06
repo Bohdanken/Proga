@@ -1,5 +1,5 @@
 import numpy as np
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from os import sep
 import pickle
@@ -22,6 +22,7 @@ model_path = "model/tuning/logistic_regression_v11/"
 model = "logistic_regression_v11_lbfgs_split3.pkl"
 path_to_forecasts = "data/forecasts/"
 time_as_path = 'data/forecasts/2023-04-24 2.json'
+API_TOKEN = "ugwUH-FCAnK4q0Dkk0rJmTkffbp5q7V-YYZJWcW6EdkBxDyRE9k"
 
 @app.route('/send_prediction', methods=['POST'])
 def send_forecast():
@@ -31,6 +32,9 @@ def send_forecast():
     region = data['region']
     date_requested = data["date"]
     time_requested = data['time']
+    token=data["token"]
+    if token!=API_TOKEN:
+        return jsonify({'error': "Wrong token"}), 500
     date_time_requested = datetime.strptime(f"{date_requested} {time_requested}", "%Y-%m-%d %H")
     predictions=check_for_existing_alarm_prediction_and_calculate(date_time_requested)
     last_alarm_forecasts_time = datetime.fromtimestamp(os.path.getmtime(f"data/predicted_alarms/{date_requested} {time_requested}.json")).strftime("%Y-%m-%d %H:%M")
