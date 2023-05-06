@@ -22,7 +22,7 @@ model_path = "model/tuning/logistic_regression_v11/"
 model = "logistic_regression_v11_lbfgs_split3.pkl"
 path_to_forecasts = "data/forecasts/"
 time_as_path = 'data/forecasts/2023-04-24 2.json'
-API_TOKEN = "ugwUH-FCAnK4q0Dkk0rJmTkffbp5q7V-YYZJWcW6EdkBxDyRE9k"
+API_TOKEN = ""
 
 @app.route('/send_prediction', methods=['POST'])
 def send_forecast():
