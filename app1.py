@@ -85,7 +85,7 @@ def calculate():
     headers = {'Content-type': 'application/json'}
 
     # Send the JSON payload to the API using a POST request
-    response = requests.post('http://34.227.228.224:7000/send_prediction', data=json.dumps(payload), headers=headers)
+    response = requests.post('http://localhost:7000/send_prediction', data=json.dumps(payload), headers=headers)
     time_array=None
     predictions=None
     # Check if the request was successful (status code 200)
