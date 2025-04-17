@@ -1,20 +1,16 @@
-# AIR RAID ALARM FORECAST API AND​  THE CORRESPONDING UI
+# AIR RAID ALARM FORECAST API (machine learning model)
 
-We decided to create a service that will predict air raid alarms by hour for every region in Ukraine, based on the weather data and the reports from the Institute for the Study of War (ISW). We believe this will help users plan their days accordingly and prepare them for possible danger. Also, our Air Raid Alarm Forecast API (ARAF API) can help other developers create something important.  We  haven‘t  found  any  similar  products in the  Web, so we  are  proud  to  say, that  we  are  now  filling  this  gap.​
+We decided to create a service that will predict air raid alarms for next day for every region in Ukraine, based on the weather data, news, and the reports from the Institute for the Study of War (ISW). We believe this will help users plan their days accordingly and prepare them for possible danger.  We  haven‘t  found  any  similar  products in the  Web, so we  are  proud  to  say, that  we  are  now  filling  this  gap.​
 
 
 
 ## Installation
 
-To run this project on your machine, follow these steps:
+To run this project on your own machine, follow these steps:
 
 1.  Clone the repository to your local machine: `git clone https://github.com/Bohdanken/Proga`
-2. Clone branch ServerBranch on your server
-    
+2.  Clone branch ServerBranch on your server
 3.  Install the required dependencies by running the following command in the project directory: `pip install -r requirements.txt`
-    
-4.  Download the necessary data files and place them in the appropriate directories in the project folder.
-    
 5.  Run the project by executing the following command:  `pyuwsgi --http 0.0.0.0:7000 --wsgi-file app.py --callable app --processes 4 --threads 2 --stats 127.0.0.1:9191`
     
 
